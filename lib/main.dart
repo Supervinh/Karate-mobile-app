@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shinpan/l10n/app_localizations.dart';
+import 'welcome_page.dart';
 
 void main() {
   runApp(const ShinpanRootApp());
@@ -32,12 +34,15 @@ class _ShinpanRootAppState extends State<ShinpanRootApp> {
     });
   }
 
-  void _onLanguageSelected(String languageCode) async {
+  void _onLanguageSelected(BuildContext context, String languageCode) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('selected_language', languageCode);
     setState(() {
       _selectedLocale = Locale(languageCode);
     });
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => const WelcomePage()),
+    );
   }
 
   @override
@@ -54,6 +59,7 @@ class _ShinpanRootAppState extends State<ShinpanRootApp> {
         Locale('en'),
       ],
       localizationsDelegates: const [
+        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
@@ -64,13 +70,13 @@ class _ShinpanRootAppState extends State<ShinpanRootApp> {
       locale: _selectedLocale,
       home: _selectedLocale == null
           ? LanguageSelectionScreen(onSelected: _onLanguageSelected)
-          : const MyHomePage(title: 'Flutter Demo Home Page'),
+          : const WelcomePage(),
     );
   }
 }
 
 class LanguageSelectionScreen extends StatelessWidget {
-  final void Function(String) onSelected;
+  final void Function(BuildContext, String) onSelected;
   const LanguageSelectionScreen({super.key, required this.onSelected});
 
   @override
@@ -82,7 +88,7 @@ class LanguageSelectionScreen extends StatelessWidget {
           children: [
             Expanded(
               child: GestureDetector(
-                onTap: () => onSelected('fr'),
+                onTap: () => onSelected(context, 'fr'),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -101,7 +107,7 @@ class LanguageSelectionScreen extends StatelessWidget {
             const SizedBox(width: 20),
             Expanded(
               child: GestureDetector(
-                onTap: () => onSelected('en'),
+                onTap: () => onSelected(context, 'en'),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -119,51 +125,6 @@ class LanguageSelectionScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ),
     );
   }
