@@ -41,7 +41,12 @@ class _ShinpanRootAppState extends State<ShinpanRootApp> {
       _selectedLocale = Locale(languageCode);
     });
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const WelcomePage()),
+      MaterialPageRoute(
+        builder: (_) => WelcomePage(
+          locale: _selectedLocale!,
+          onLanguageSelected: _onLanguageSelected,
+        ),
+      ),
     );
   }
 
@@ -70,7 +75,7 @@ class _ShinpanRootAppState extends State<ShinpanRootApp> {
       locale: _selectedLocale,
       home: _selectedLocale == null
           ? LanguageSelectionScreen(onSelected: _onLanguageSelected)
-          : const WelcomePage(),
+          : WelcomePage(locale: _selectedLocale!, onLanguageSelected: _onLanguageSelected),
     );
   }
 }

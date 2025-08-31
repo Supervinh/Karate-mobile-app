@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "question": "A karate match takes place on an 8x8 meter competition area.",
+    "answer": true
+  },
+  {
+    "id": 2,
+    "question": "A referee can stop the fight without consulting the judges.",
+    "answer": true
+  }
+]

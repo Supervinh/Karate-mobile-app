@@ -100,6 +100,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Welcome to the Shinpan app'**
   String get welcomeTitle;
+
+  /// No description provided for @selectLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Select language'**
+  String get selectLanguage;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

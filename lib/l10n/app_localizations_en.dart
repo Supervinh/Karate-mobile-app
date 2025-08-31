@@ -10,4 +10,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get welcomeTitle => 'Welcome to the Shinpan app';
+
+  @override
+  String get selectLanguage => 'Select language';
 }
