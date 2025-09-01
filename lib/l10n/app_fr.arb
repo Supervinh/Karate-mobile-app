@@ -1,4 +1,7 @@
 {
   "welcomeTitle": "Bienvenue sur l'application Shinpan",
-  "selectLanguage": "Choisir la langue"
+  "selectLanguage": "Choisir la langue",
+  "kataQuiz": "Quiz Kata",
+  "kumiteQuiz": "Quiz Kumite",
+  "anyQuiz": "Quiz Aléatoire"
 }

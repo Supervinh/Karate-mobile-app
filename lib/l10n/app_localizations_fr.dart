@@ -13,4 +13,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get selectLanguage => 'Choisir la langue';
+
+  @override
+  String get kataQuiz => 'Quiz Kata';
+
+  @override
+  String get kumiteQuiz => 'Quiz Kumite';
+
+  @override
+  String get anyQuiz => 'Quiz Aléatoire';
 }

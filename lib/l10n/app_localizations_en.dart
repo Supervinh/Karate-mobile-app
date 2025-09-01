@@ -13,4 +13,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selectLanguage => 'Select language';
+
+  @override
+  String get kataQuiz => 'Kata Quiz';
+
+  @override
+  String get kumiteQuiz => 'Kumite Quiz';
+
+  @override
+  String get anyQuiz => 'Any Quiz';
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shinpan/l10n/app_localizations.dart';
+import 'package:shinpan/quiz_page.dart';
 
 class WelcomePage extends StatelessWidget {
   final Locale locale;
@@ -10,6 +11,18 @@ class WelcomePage extends StatelessWidget {
     'fr': 'lib/assets/flags/fr.png',
     'en': 'lib/assets/flags/en.png',
   };
+
+  void _onQuizSelected(BuildContext context, String quizType) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => QuizPage(
+          quizType: quizType,
+          locale: locale,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,10 +70,30 @@ class WelcomePage extends StatelessWidget {
         ],
       ),
       body: Center(
-        child: Text(
-          l10n.welcomeTitle,
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              l10n.welcomeTitle,
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 32),
+            ElevatedButton(
+              onPressed: () => _onQuizSelected(context, 'kata'),
+              child: Text(l10n.kataQuiz),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => _onQuizSelected(context, 'kumite'),
+              child: Text(l10n.kumiteQuiz),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => _onQuizSelected(context, 'any'),
+              child: Text(l10n.anyQuiz),
+            ),
+          ],
         ),
       ),
     );

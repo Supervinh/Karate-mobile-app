@@ -106,6 +106,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select language'**
   String get selectLanguage;
+
+  /// No description provided for @kataQuiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Kata Quiz'**
+  String get kataQuiz;
+
+  /// No description provided for @kumiteQuiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Kumite Quiz'**
+  String get kumiteQuiz;
+
+  /// No description provided for @anyQuiz.
+  ///
+  /// In en, this message translates to:
+  /// **'Any Quiz'**
+  String get anyQuiz;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
