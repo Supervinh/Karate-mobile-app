@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  push:
+    branches: [main, develop]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '20'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@fd55f4c5af5b953cc57a2be44cb082c8f6635e8e
+        with:
+          flutter-version: '3.32.6'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Semantic Release
+        id: release
+        uses: cycjimmy/semantic-release-action@16ca923e6ccbb50770c415a0ccd43709a8c5f7a4
+        with:
+          extra_plugins: |
+            @semantic-release/exec
+            @semantic-release/git
+            @semantic-release/release-notes-generator
+            conventional-changelog-conventionalcommits
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 👍 Merge main back to dev
+        if: github.ref == 'refs/heads/main' && steps.release.outputs.new_release_published == 'true'
+        run: |
+            git config --local user.email "github-actions[bot]@users.noreply.github.com"
+            git config --local user.name "github-actions[bot]"
+            git fetch
+            git checkout develop
+            git branch --set-upstream-to=origin/develop develop
+            git pull
+            git merge --no-ff main -m "Auto-merge main back to dev"
+            git push
+
+      - name: 🧹 Delete pre-releases
+        if: github.ref == 'refs/heads/main' && steps.release.outputs.new_release_published == 'true'
+        uses: dev-drprasad/delete-older-releases@dfbe6be2a006e9475dfcbe5b8d201f1824c2a9fe
+        with:
+          delete_tag_pattern: develop
+          keep_latest: 0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

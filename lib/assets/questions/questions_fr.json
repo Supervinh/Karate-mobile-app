@@ -1,0 +1,123 @@
+[
+  {
+    "id": 1,
+    "question": "Si la surface de compétition est surélevée, un mètre supplémentaire, soit un total de 3 mètres, est requis de chaque côté.",
+    "answer": true,
+    "type": "kumite"
+  },
+  {
+    "id": 2,
+    "question": "Tout couvre-chef religieux peut être porté.",
+    "answer": false,
+    "type": "kumite"
+  },
+  {
+    "id": 3,
+    "question": "La veste du Karate-Gi doit être plus longue que les trois quarts de la cuisse.",
+    "answer": false,
+    "type": "kumite"
+  },
+  {
+    "id": 4,
+    "question": "Le pantalon du Karate-Gi doit couvrir au moins les deux tiers du tibia.",
+    "answer": true,
+    "type": "kumite"
+  },
+  {
+    "id": 5,
+    "question": "La manche de la veste du Karate-Gi ne doit pas dépasser le pli du poignet.",
+    "answer": true,
+    "type": "kumite"
+  },
+  {
+    "id": 6,
+    "question": "Si les manches de la veste du Karate-Gi d’un concurrent sont trop longues et qu’un remplacement approprié ne peut être trouvé à temps, l’arbitre peut lui permettre de les replier à l’intérieur.",
+    "answer": false,
+    "type": "kumite"
+  },
+  {
+    "id": 7,
+    "question": "Les compétiteurs peuvent porter 1 ou 2 élastiques discrets ou attaches pour queue de cheval dans leurs cheveux. Les rubans, perles et autres décorations sont interdits.",
+    "answer": true,
+    "type": "kumite"
+  },
+  {
+    "id": 8,
+    "question": "Les boucles d’oreilles sont autorisées si elles sont recouvertes de ruban adhésif.",
+    "answer": false,
+    "type": "kumite"
+  },
+  {
+    "id": 9,
+    "question": "Les appareils dentaires métalliques peuvent être portés aux risques du concurrent, si cela est approuvé par l’arbitre et le médecin officiel.",
+    "answer": true,
+    "type": "kumite"
+  },
+  {
+    "id": 10,
+    "question": "Les concurrents doivent saluer correctement l’un devant l’autre au début et à la fin du combat.",
+    "answer": true,
+    "type": "kumite"
+  },
+  {
+    "id": 11,
+    "question": "Les membres d’une équipe de Kata doivent tous porter la même marque de Karate-Gi.",
+    "answer": false,
+    "type": "kata"
+  },
+  {
+    "id": 12,
+    "question": "Le temps total autorisé pour le Kata et le BUNKAI combinés est de six minutes.",
+    "answer": false,
+    "type": "kata"
+  },
+  {
+    "id": 13,
+    "question": "En Kata, de légères variations telles qu’enseignées par le style (Ryu-ha) du concurrent sont permises.",
+    "answer": true,
+    "type": "kata"
+  },
+  {
+    "id": 14,
+    "question": "Les lunettes sont interdites en compétition de Kata.",
+    "answer": true,
+    "type": "kata"
+  },
+  {
+    "id": 15,
+    "question": "Un seul élastique discret sur une seule queue de cheval est autorisé.",
+    "answer": false,
+    "type": "kata"
+  },
+  {
+    "id": 16,
+    "question": "La compétition de Kata peut être organisée selon plusieurs formats.",
+    "answer": true,
+    "type": "kata"
+  },
+  {
+    "id": 17,
+    "question": "Dans tous les formats de compétition, le nombre de compétiteurs ne peut pas dépasser 8.",
+    "answer": false,
+    "type": "kata"
+  },
+  {
+    "id": 18,
+    "question": "La conformité est une cohérence dans l’exécution du Kihon du style (Ryu-ha) dans le Kata.",
+    "answer": true,
+    "type": "kata"
+  },
+  {
+    "id": 19,
+    "question": "Les matchs par équipe consistent en une compétition entre équipes de 3 ou 4 compétiteurs dont 3 concourent à la fois.",
+    "answer": true,
+    "type": "kata"
+  },
+  {
+    "id": 20,
+    "question": "En cas de divergence entre le numéro et le nom du Kata enregistré pour la performance, le nom, selon la liste officielle des Kata WKF, prévaudra.",
+    "answer": false,
+    "type": "kata"
+  }
+]
+
