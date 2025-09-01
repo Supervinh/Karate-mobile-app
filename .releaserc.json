@@ -70,6 +70,12 @@
           ]
         }
       }
+    ],
+    [
+      "@semantic-release/exec",
+      {
+        "successCmd": "flutter build apk --split-per-abi"
+      }
     ]
   ]
 }
