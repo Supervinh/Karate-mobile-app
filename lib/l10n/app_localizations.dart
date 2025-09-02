@@ -142,6 +142,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Validate'**
   String get validateButton;
+
+  /// No description provided for @correctResult.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct +1 point'**
+  String get correctResult;
+
+  /// No description provided for @falseResult.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect no point'**
+  String get falseResult;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

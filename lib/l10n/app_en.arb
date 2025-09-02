@@ -6,5 +6,7 @@
   "anyQuiz": "Any Quiz",
   "nextButton": "Next",
   "endButton": "End",
-  "validateButton": "Validate"
+  "validateButton": "Validate",
+  "correctResult": "Correct +1 point",
+  "falseResult": "Incorrect no point"
 }

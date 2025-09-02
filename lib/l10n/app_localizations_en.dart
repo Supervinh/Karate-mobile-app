@@ -31,4 +31,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get validateButton => 'Validate';
+
+  @override
+  String get correctResult => 'Correct +1 point';
+
+  @override
+  String get falseResult => 'Incorrect no point';
 }

@@ -6,5 +6,7 @@
   "anyQuiz": "Quiz Aléatoire",
   "nextButton": "Suivant",
   "endButton": "Finir",
-  "validateButton": "Valider"
+  "validateButton": "Valider",
+  "correctResult": "Bonne réponse +1 point",
+  "falseResult": "Mauvaise réponse aucun point"
 }

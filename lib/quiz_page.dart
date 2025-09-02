@@ -290,6 +290,20 @@ class _QuizPageState extends State<QuizPage> {
                   ),
                 if (showResult)
                   Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(
+                      wasCorrect == true
+                        ? l10n.correctResult
+                        : l10n.falseResult,
+                      style: TextStyle(
+                        color: wasCorrect == true ? Colors.green : Colors.red,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                if (showResult)
+                  Padding(
                     padding: const EdgeInsets.only(top: 16.0),
                     child: ElevatedButton(
                       onPressed: _nextQuestion,
