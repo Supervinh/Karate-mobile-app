@@ -11,6 +11,7 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    target-branch: develop
   
   # Maintain dependencies for GitHub Actions
   - package-ecosystem: "github-actions"

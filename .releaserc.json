@@ -10,7 +10,17 @@
   ],
   "plugins": [
     "@semantic-release/commit-analyzer",
-    "@semantic-release/github",
+    [
+      "@semantic-release/github",
+        {
+          "assets": [
+            "build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk",
+            "build/app/outputs/flutter-apk/app-arm64-v8a-release.apk",
+            "build/app/outputs/flutter-apk/app-x86_64-release.apk",
+            "build/app/outputs/flutter-apk/app-release.apk"
+          ]
+        }
+    ],
     [
       "@semantic-release/release-notes-generator",
       {
@@ -74,7 +84,7 @@
     [
       "@semantic-release/exec",
       {
-        "successCmd": "flutter build apk --split-per-abi"
+        "prepareCmd": "flutter build apk --split-per-abi"
       }
     ]
   ]
