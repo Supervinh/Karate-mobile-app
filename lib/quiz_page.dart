@@ -24,6 +24,7 @@ class _QuizPageState extends State<QuizPage> {
   int timer = timerDuration;
   Timer? _timer;
   bool answered = false;
+  bool? selectedAnswer; // null: not selected, true/false: selected
 
   @override
   void initState() {
@@ -50,6 +51,7 @@ class _QuizPageState extends State<QuizPage> {
       loading = false;
       timer = timerDuration;
       answered = false;
+      selectedAnswer = null;
     });
     _startTimer();
   }
@@ -59,6 +61,7 @@ class _QuizPageState extends State<QuizPage> {
     setState(() {
       timer = timerDuration;
       answered = false;
+      selectedAnswer = null;
     });
     _timer = Timer.periodic(const Duration(seconds: 1), (t) {
       if (!mounted || finished || loading) return;
@@ -67,7 +70,12 @@ class _QuizPageState extends State<QuizPage> {
         if (timer <= 0) {
           _timer?.cancel();
           if (!answered) {
+            // Validate automatically with selected answer or no answer
             answered = true;
+            if (selectedAnswer != null &&
+                questions[currentIndex]['answer'] == selectedAnswer) {
+              score++;
+            }
             _nextQuestion();
           }
         }
@@ -81,6 +89,7 @@ class _QuizPageState extends State<QuizPage> {
         currentIndex++;
         timer = timerDuration;
         answered = false;
+        selectedAnswer = null;
       });
       _startTimer();
     } else {
@@ -93,8 +102,16 @@ class _QuizPageState extends State<QuizPage> {
 
   void _answer(bool userAnswer) {
     if (!answered) {
+      setState(() {
+        selectedAnswer = userAnswer;
+      });
+    }
+  }
+
+  void _validate() {
+    if (!answered && selectedAnswer != null) {
       answered = true;
-      if (questions[currentIndex]['answer'] == userAnswer) {
+      if (questions[currentIndex]['answer'] == selectedAnswer) {
         score++;
       }
       _timer?.cancel();
@@ -201,15 +218,37 @@ class _QuizPageState extends State<QuizPage> {
                   children: [
                     ElevatedButton(
                       onPressed: answered ? null : () => _answer(true),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: selectedAnswer == true
+                            ? Colors.blue
+                            : null,
+                      ),
                       child: Text(langTrueText(l10n)),
                     ),
                     const SizedBox(width: 32),
                     ElevatedButton(
                       onPressed: answered ? null : () => _answer(false),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: selectedAnswer == false
+                            ? Colors.blue
+                            : null,
+                      ),
                       child: Text(langFalseText(l10n)),
                     ),
                   ],
                 ),
+                if (!answered && selectedAnswer != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: ElevatedButton(
+                      onPressed: _validate,
+                      child: Text(
+                        widget.locale.languageCode == 'fr'
+                            ? 'Valider'
+                            : 'Validate',
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
