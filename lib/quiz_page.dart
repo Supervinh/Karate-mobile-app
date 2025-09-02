@@ -25,6 +25,8 @@ class _QuizPageState extends State<QuizPage> {
   Timer? _timer;
   bool answered = false;
   bool? selectedAnswer; // null: not selected, true/false: selected
+  bool showResult = false; // Ajouté pour afficher le résultat
+  bool? wasCorrect; // Ajouté pour savoir si la réponse était correcte
 
   @override
   void initState() {
@@ -52,6 +54,8 @@ class _QuizPageState extends State<QuizPage> {
       timer = timerDuration;
       answered = false;
       selectedAnswer = null;
+      showResult = false;
+      wasCorrect = null;
     });
     _startTimer();
   }
@@ -62,6 +66,8 @@ class _QuizPageState extends State<QuizPage> {
       timer = timerDuration;
       answered = false;
       selectedAnswer = null;
+      showResult = false;
+      wasCorrect = null;
     });
     _timer = Timer.periodic(const Duration(seconds: 1), (t) {
       if (!mounted || finished || loading) return;
@@ -70,13 +76,17 @@ class _QuizPageState extends State<QuizPage> {
         if (timer <= 0) {
           _timer?.cancel();
           if (!answered) {
-            // Validate automatically with selected answer or no answer
+            // Validation automatique
             answered = true;
+            showResult = true;
             if (selectedAnswer != null &&
                 questions[currentIndex]['answer'] == selectedAnswer) {
               score++;
+              wasCorrect = true;
+            } else {
+              wasCorrect = false;
             }
-            _nextQuestion();
+            // Si aucune réponse, wasCorrect reste false
           }
         }
       });
@@ -90,6 +100,8 @@ class _QuizPageState extends State<QuizPage> {
         timer = timerDuration;
         answered = false;
         selectedAnswer = null;
+        showResult = false;
+        wasCorrect = null;
       });
       _startTimer();
     } else {
@@ -110,13 +122,42 @@ class _QuizPageState extends State<QuizPage> {
 
   void _validate() {
     if (!answered && selectedAnswer != null) {
-      answered = true;
-      if (questions[currentIndex]['answer'] == selectedAnswer) {
-        score++;
-      }
+      setState(() {
+        answered = true;
+        showResult = true;
+        if (questions[currentIndex]['answer'] == selectedAnswer) {
+          score++;
+          wasCorrect = true;
+        } else {
+          wasCorrect = false;
+        }
+      });
       _timer?.cancel();
-      _nextQuestion();
     }
+  }
+
+  Color? _getButtonColor(bool buttonValue) {
+    if (!showResult) {
+      // Sélection normale
+      if (selectedAnswer == buttonValue) {
+        return Colors.blue;
+      }
+      return null;
+    }
+    // Après validation
+    final correctAnswer = questions[currentIndex]['answer'] as bool;
+    if (selectedAnswer == null) {
+      // Si aucune réponse, colorer la bonne en vert
+      if (buttonValue == correctAnswer) return Colors.green;
+      return null;
+    }
+    if (buttonValue == selectedAnswer) {
+      if (selectedAnswer == correctAnswer) return Colors.green;
+      return Colors.red;
+    }
+    // Si ce n'est pas le bouton sélectionné, mais c'est la bonne réponse
+    if (buttonValue == correctAnswer) return Colors.green;
+    return null;
   }
 
   @override
@@ -217,35 +258,45 @@ class _QuizPageState extends State<QuizPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
-                      onPressed: answered ? null : () => _answer(true),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: selectedAnswer == true
-                            ? Colors.blue
-                            : null,
+                      onPressed: (!answered && !showResult) ? () => _answer(true) : () {}, // Toujours enabled
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.resolveWith<Color?>((states) {
+                          return _getButtonColor(true);
+                        }),
+                        foregroundColor: WidgetStateProperty.all<Color>(Colors.black),
                       ),
                       child: Text(langTrueText(l10n)),
                     ),
                     const SizedBox(width: 32),
                     ElevatedButton(
-                      onPressed: answered ? null : () => _answer(false),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: selectedAnswer == false
-                            ? Colors.blue
-                            : null,
+                      onPressed: (!answered && !showResult) ? () => _answer(false) : () {}, // Toujours enabled
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.resolveWith<Color?>((states) {
+                          return _getButtonColor(false);
+                        }),
+                        foregroundColor: WidgetStateProperty.all<Color>(Colors.black),
                       ),
                       child: Text(langFalseText(l10n)),
                     ),
                   ],
                 ),
-                if (!answered && selectedAnswer != null)
+                if (!answered && selectedAnswer != null && !showResult)
                   Padding(
                     padding: const EdgeInsets.only(top: 16.0),
                     child: ElevatedButton(
                       onPressed: _validate,
+                      child: Text(l10n.validateButton),
+                    ),
+                  ),
+                if (showResult)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: ElevatedButton(
+                      onPressed: _nextQuestion,
                       child: Text(
-                        widget.locale.languageCode == 'fr'
-                            ? 'Valider'
-                            : 'Validate',
+                        currentIndex == 4
+                          ? l10n.endButton
+                          : l10n.nextButton,
                       ),
                     ),
                   ),

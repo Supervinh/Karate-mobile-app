@@ -3,5 +3,8 @@
   "selectLanguage": "Select language",
   "kataQuiz": "Kata Quiz",
   "kumiteQuiz": "Kumite Quiz",
-  "anyQuiz": "Any Quiz"
+  "anyQuiz": "Any Quiz",
+  "nextButton": "Next",
+  "endButton": "End",
+  "validateButton": "Validate"
 }

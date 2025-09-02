@@ -124,6 +124,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Any Quiz'**
   String get anyQuiz;
+
+  /// No description provided for @nextButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get nextButton;
+
+  /// No description provided for @endButton.
+  ///
+  /// In en, this message translates to:
+  /// **'End'**
+  String get endButton;
+
+  /// No description provided for @validateButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Validate'**
+  String get validateButton;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
