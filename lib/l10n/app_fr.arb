@@ -3,5 +3,10 @@
   "selectLanguage": "Choisir la langue",
   "kataQuiz": "Quiz Kata",
   "kumiteQuiz": "Quiz Kumite",
-  "anyQuiz": "Quiz Aléatoire"
+  "anyQuiz": "Quiz Aléatoire",
+  "nextButton": "Suivant",
+  "endButton": "Finir",
+  "validateButton": "Valider",
+  "correctResult": "Bonne réponse +1 point",
+  "falseResult": "Mauvaise réponse aucun point"
 }

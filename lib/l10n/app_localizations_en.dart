@@ -22,4 +22,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get anyQuiz => 'Any Quiz';
+
+  @override
+  String get nextButton => 'Next';
+
+  @override
+  String get endButton => 'End';
+
+  @override
+  String get validateButton => 'Validate';
+
+  @override
+  String get correctResult => 'Correct +1 point';
+
+  @override
+  String get falseResult => 'Incorrect no point';
 }

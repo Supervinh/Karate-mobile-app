@@ -22,4 +22,19 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get anyQuiz => 'Quiz Aléatoire';
+
+  @override
+  String get nextButton => 'Suivant';
+
+  @override
+  String get endButton => 'Finir';
+
+  @override
+  String get validateButton => 'Valider';
+
+  @override
+  String get correctResult => 'Bonne réponse +1 point';
+
+  @override
+  String get falseResult => 'Mauvaise réponse aucun point';
 }
