@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "question": "If the competition area is elevated another meter to a total of 3 meters is required on all sides.",
+    "answer": true,
+    "type": "kumite"
+  },
+  {
+    "id": 2,
+    "question": "Any Voluntary religious headwear can be worn.",
+    "answer": false,
+    "type": "kumite"
+  },
+  {
+    "id": 3,
+    "question": "The Karate-Gi jacket must be more than three-quarters thigh length.",
+    "answer": false,
+    "type": "kumite"
+  },
+  {
+    "id": 4,
+    "question": "The Karate-Gi trousers must cover at least two-thirds of the shin.",
+    "answer": true,
+    "type": "kumite"
+  },
+  {
+    "id": 5,
+    "question": "The Karate-Gi jacket sleeve must be no longer than the bend of the wrist.",
+    "answer": true,
+    "type": "kumite"
+  },
+  {
+    "id": 6,
+    "question": "If a contestant’s Karate-Gi jacket sleeves are too long and a suitable replacement cannot be found in time the Referee can allow him to turn them up on the inside.",
+    "answer": false,
+    "type": "kumite"
+  },
+  {
+    "id": 7,
+    "question": "Competitors may wear 1 or 2 discreet rubber band or ponytail retainer in their hair. Ribbons, beads and other decorations are prohibited.",
+    "answer": true,
+    "type": "kumite"
+  },
+  {
+    "id": 8,
+    "question": "Earrings are allowed if they are covered with tape.",
+    "answer": false,
+    "type": "kumite"
+  },
+  {
+    "id": 9,
+    "question": "Metallic teeth (dental) braces may be worn at the contestant’s own risk if approved by the Referee and the Official Doctor.",
+    "answer": true,
+    "type": "kumite"
+  },
+  {
+    "id": 10,
+    "question": "Contestants must bow properly to each other at the start and end of the bout.",
+    "answer": true,
+    "type": "kumite"
+  },
+  {
+    "id": 11,
+    "question": "Kata team members must all wear the same type of Karate Gi.",
+    "answer": false,
+    "type": "kata"
+  },
+  {
+    "id": 12,
+    "question": "The total time allowed for the Kata and BUNKAI demonstration combined, is six minutes.",
+    "answer": false,
+    "type": "kata"
+  },
+  {
+    "id": 13,
+    "question": "In Kata competition slight variations as taught by the contestant's style (Ryu-ha) are permitted.",
+    "answer": true,
+    "type": "kata"
+  },
+  {
+    "id": 14,
+    "question": "Glasses are forbidden in Kata completion.",
+    "answer": true,
+    "type": "kata"
+  },
+  {
+    "id": 15,
+    "question": "Only one discreet rubber band on a single ponytail is permitted.",
+    "answer": false,
+    "type": "kata"
+  },
+  {
+    "id": 16,
+    "question": "Kata competition can be organized in several formats.",
+    "answer": true,
+    "type": "kata"
+  },
+  {
+    "id": 17,
+    "question": "In all competition format, the number of Competitors cannot exceed 8.",
+    "answer": false,
+    "type": "kata"
+  },
+  {
+    "id": 18,
+    "question": "Conformance is a consistency in the performance of the Kihon of the style (Ryu-ha) in the Kata.",
+    "answer": true,
+    "type": "kata"
+  },
+  {
+    "id": 19,
+    "question": "Team matches consist of competition between teams of 3 or 4 competitors of which 3 compete at the time.",
+    "answer": true,
+    "type": "kata"
+  },
+  {
+    "id": 20,
+    "question": "Should there be any discrepancy between the number and the name of the Kata registered for performance,the name, as per the official WKF Kata list will prevail.",
+    "answer": false,
+    "type": "kata"
+  }
+]

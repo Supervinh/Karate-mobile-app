@@ -1,0 +1,103 @@
+import 'package:flutter/material.dart';
+import 'package:shinpan/l10n/app_localizations.dart';
+import 'package:shinpan/quiz_page.dart';
+
+class WelcomePage extends StatelessWidget {
+  final Locale locale;
+  final void Function(BuildContext, String) onLanguageSelected;
+  const WelcomePage({super.key, required this.locale, required this.onLanguageSelected});
+
+  // Map of flag image paths for each language
+  static const Map<String, String> flagPaths = {
+    'fr': 'lib/assets/flags/fr.png',
+    'en': 'lib/assets/flags/en.png',
+  };
+
+  // Handles quiz type selection and navigation to QuizPage
+  void _onQuizSelected(BuildContext context, String quizType) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => QuizPage(
+          quizType: quizType,
+          locale: locale,
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final langCode = locale.languageCode;
+    return Scaffold(
+      appBar: AppBar(
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: GestureDetector(
+              onTap: () async {
+                final selected = await showDialog<String>(
+                  context: context,
+                  builder: (context) {
+                    return SimpleDialog(
+                      title: Text(l10n.selectLanguage),
+                      children: flagPaths.entries.map((entry) {
+                        return SimpleDialogOption(
+                          onPressed: () => Navigator.pop(context, entry.key),
+                          child: Row(
+                            children: [
+                              Image.asset(entry.value, width: 40, height: 24, errorBuilder: (context, error, stackTrace) => Icon(Icons.flag)),
+                              const SizedBox(width: 12),
+                              Text(entry.key == 'fr' ? 'Français' : 'English'),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    );
+                  },
+                );
+                if (selected != null && selected != langCode) {
+                  onLanguageSelected(context, selected);
+                }
+              },
+              child: Image.asset(
+                flagPaths[langCode] ?? flagPaths['en']!,
+                width: 40,
+                height: 24,
+                errorBuilder: (context, error, stackTrace) => Icon(Icons.flag),
+              ),
+            ),
+          ),
+        ],
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              l10n.welcomeTitle,
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 32),
+            ElevatedButton(
+              onPressed: () => _onQuizSelected(context, 'kata'),
+              child: Text(l10n.kataQuiz),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => _onQuizSelected(context, 'kumite'),
+              child: Text(l10n.kumiteQuiz),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => _onQuizSelected(context, 'any'),
+              child: Text(l10n.anyQuiz),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
