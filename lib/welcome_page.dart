@@ -7,11 +7,13 @@ class WelcomePage extends StatelessWidget {
   final void Function(BuildContext, String) onLanguageSelected;
   const WelcomePage({super.key, required this.locale, required this.onLanguageSelected});
 
+  // Map of flag image paths for each language
   static const Map<String, String> flagPaths = {
     'fr': 'lib/assets/flags/fr.png',
     'en': 'lib/assets/flags/en.png',
   };
 
+  // Handles quiz type selection and navigation to QuizPage
   void _onQuizSelected(BuildContext context, String quizType) {
     Navigator.push(
       context,
