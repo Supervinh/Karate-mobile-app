@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shinpan/l10n/app_localizations.dart';
 import 'package:confetti/confetti.dart';
+import 'package:shinpan/question_picker.dart';
 
 class QuizPage extends StatefulWidget {
   final String quizType; // 'kumite', 'kata', 'any'
@@ -16,9 +17,13 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
+  // List of questions for the quiz
   late List<dynamic> questions;
+  // Controller for confetti animation
   late ConfettiController _confettiController;
+  // Controller for shake animation
   late AnimationController _shakeController;
+  // Animation for shake effect
   late Animation<double> _shakeAnimation;
   static const int timerDuration = 20;
   int currentIndex = 0;
@@ -29,8 +34,8 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   Timer? _timer;
   bool answered = false;
   bool? selectedAnswer; // null: not selected, true/false: selected
-  bool showResult = false; // Ajouté pour afficher le résultat
-  bool? wasCorrect; // Ajouté pour savoir si la réponse était correcte
+  bool showResult = false; // Added to display the result
+  bool? wasCorrect; // Added to know if the answer was correct
 
   @override
   void initState() {
@@ -53,16 +58,14 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     final assetPath = 'lib/assets/questions/questions_$langCode.json';
     final data = await rootBundle.loadString(assetPath);
     final allQuestions = json.decode(data) as List<dynamic>;
-    List<dynamic> filtered;
-    if (widget.quizType == 'any') {
-      filtered = List.from(allQuestions);
-    } else {
-      filtered = allQuestions
-          .where((q) => q['type'] == widget.quizType)
-          .toList();
-    }
-    filtered.shuffle(Random());
-    questions = filtered.take(5).toList();
+    // Use weighted picker for question selection
+    final picker = WeightedQuestionPicker(
+      allQuestions: allQuestions,
+      quizType: widget.quizType,
+      langCode: langCode,
+      pickCount: 5,
+    );
+    questions = await picker.pickQuestions();
     setState(() {
       loading = false;
       timer = timerDuration;
@@ -90,7 +93,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
         if (timer <= 0) {
           _timer?.cancel();
           if (!answered) {
-            // Validation automatique
+            // Automatic validation
             answered = true;
             showResult = true;
             if (selectedAnswer != null &&
@@ -101,14 +104,14 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
             } else {
               wasCorrect = false;
             }
-            // Si aucune réponse, wasCorrect reste false
+            // If no answer, wasCorrect remains false
           }
         }
       });
     });
   }
 
-  void _nextQuestion() {
+  void _nextQuestion() async {
     if (currentIndex < 4) {
       setState(() {
         currentIndex++;
@@ -120,6 +123,18 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
       });
       _startTimer();
     } else {
+      // Increment the appearance counters for used questions
+      final langCode = widget.locale.languageCode;
+      final assetPath = 'lib/assets/questions/questions_$langCode.json';
+      final data = await rootBundle.loadString(assetPath);
+      final allQuestions = json.decode(data) as List<dynamic>;
+      final picker = WeightedQuestionPicker(
+        allQuestions: allQuestions,
+        quizType: widget.quizType,
+        langCode: langCode,
+        pickCount: 5,
+      );
+      await picker.incrementCounts(questions);
       setState(() {
         finished = true;
       });
@@ -146,12 +161,12 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
           _confettiController.play();
         } else {
           wasCorrect = false;
-          _shakeController.forward(from: 0); // Déclenche la secousse
+          _shakeController.forward(from: 0); // Trigger shake animation
         }
       });
       _timer?.cancel();
       if (questions[currentIndex]['answer'] != selectedAnswer) {
-        // Remettre la position à zéro après la secousse
+        // Reset position after shake animation
         Future.delayed(_shakeController.duration!, () {
           if (mounted) _shakeController.reset();
         });
@@ -161,16 +176,16 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
 
   Color? _getButtonColor(bool buttonValue) {
     if (!showResult) {
-      // Sélection normale
+      // Normal selection
       if (selectedAnswer == buttonValue) {
         return Colors.blue;
       }
       return null;
     }
-    // Après validation
+    // After validation
     final correctAnswer = questions[currentIndex]['answer'] as bool;
     if (selectedAnswer == null) {
-      // Si aucune réponse, colorer la bonne en vert
+      // If no answer, color the correct one in green
       if (buttonValue == correctAnswer) return Colors.green;
       return null;
     }
@@ -178,7 +193,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
       if (selectedAnswer == correctAnswer) return Colors.green;
       return Colors.red;
     }
-    // Si ce n'est pas le bouton sélectionné, mais c'est la bonne réponse
+    // If not the selected button, but it's the correct answer
     if (buttonValue == correctAnswer) return Colors.green;
     return null;
   }
@@ -259,7 +274,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-              // Ajoute du padding entre le cercle et le texte
+              // Added padding between the circle and the text
               const SizedBox(height: 24),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),

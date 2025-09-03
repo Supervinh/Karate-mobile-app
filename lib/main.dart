@@ -8,6 +8,7 @@ void main() {
   runApp(const ShinpanRootApp());
 }
 
+// Main application widget
 class ShinpanRootApp extends StatefulWidget {
   const ShinpanRootApp({super.key});
 
@@ -25,6 +26,7 @@ class _ShinpanRootAppState extends State<ShinpanRootApp> {
     _loadLocale();
   }
 
+  // Loads the selected locale from shared preferences
   Future<void> _loadLocale() async {
     final prefs = await SharedPreferences.getInstance();
     final langCode = prefs.getString('selected_language');
@@ -34,6 +36,7 @@ class _ShinpanRootAppState extends State<ShinpanRootApp> {
     });
   }
 
+  // Handles language selection and updates shared preferences
   void _onLanguageSelected(BuildContext context, String languageCode) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('selected_language', languageCode);
