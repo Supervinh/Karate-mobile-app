@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shinpan/l10n/app_localizations.dart';
+import 'package:confetti/confetti.dart';
 
 class QuizPage extends StatefulWidget {
   final String quizType; // 'kumite', 'kata', 'any'
@@ -14,8 +15,11 @@ class QuizPage extends StatefulWidget {
   State<QuizPage> createState() => _QuizPageState();
 }
 
-class _QuizPageState extends State<QuizPage> {
+class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   late List<dynamic> questions;
+  late ConfettiController _confettiController;
+  late AnimationController _shakeController;
+  late Animation<double> _shakeAnimation;
   static const int timerDuration = 20;
   int currentIndex = 0;
   int score = 0;
@@ -31,6 +35,16 @@ class _QuizPageState extends State<QuizPage> {
   @override
   void initState() {
     super.initState();
+    _confettiController = ConfettiController(
+      duration: const Duration(seconds: 2),
+    );
+    _shakeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+    _shakeAnimation = Tween<double>(begin: 0, end: 32)
+        .chain(CurveTween(curve: Curves.elasticIn))
+        .animate(_shakeController);
     _loadQuestions();
   }
 
@@ -83,6 +97,7 @@ class _QuizPageState extends State<QuizPage> {
                 questions[currentIndex]['answer'] == selectedAnswer) {
               score++;
               wasCorrect = true;
+              _confettiController.play();
             } else {
               wasCorrect = false;
             }
@@ -128,11 +143,19 @@ class _QuizPageState extends State<QuizPage> {
         if (questions[currentIndex]['answer'] == selectedAnswer) {
           score++;
           wasCorrect = true;
+          _confettiController.play();
         } else {
           wasCorrect = false;
+          _shakeController.forward(from: 0); // Déclenche la secousse
         }
       });
       _timer?.cancel();
+      if (questions[currentIndex]['answer'] != selectedAnswer) {
+        // Remettre la position à zéro après la secousse
+        Future.delayed(_shakeController.duration!, () {
+          if (mounted) _shakeController.reset();
+        });
+      }
     }
   }
 
@@ -197,128 +220,192 @@ class _QuizPageState extends State<QuizPage> {
     final q = questions[currentIndex];
     return Scaffold(
       appBar: AppBar(),
-      body: Column(
+      body: Stack(
         children: [
-          // Large circular timer at the very top
-          Padding(
-            padding: const EdgeInsets.only(top: 32.0, bottom: 8.0),
-            child: Center(
-              child: SizedBox(
-                height: 160,
-                width: 160,
-                child: Stack(
-                  alignment: Alignment.center,
+          Column(
+            children: [
+              // Large circular timer at the very top
+              Padding(
+                padding: const EdgeInsets.only(top: 32.0, bottom: 8.0),
+                child: Center(
+                  child: SizedBox(
+                    height: 160,
+                    width: 160,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        SizedBox(
+                          height: 150,
+                          width: 150,
+                          child: CircularProgressIndicator(
+                            value: timer / timerDuration,
+                            strokeWidth: 12,
+                            backgroundColor: Colors.grey.shade300,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.red,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          '$timer',
+                          style: const TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              // Ajoute du padding entre le cercle et le texte
+              const SizedBox(height: 24),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(
-                      height: 150,
-                      width: 150,
-                      child: CircularProgressIndicator(
-                        value: timer / timerDuration,
-                        strokeWidth: 12,
-                        backgroundColor: Colors.grey.shade300,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
-                      ),
-                    ),
                     Text(
-                      '$timer',
+                      '${langQuestionText(l10n)} ${currentIndex + 1}/5',
                       style: const TextStyle(
-                        fontSize: 32,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black,
                       ),
+                      textAlign: TextAlign.center,
                     ),
+                    const SizedBox(height: 16),
+                    Text(
+                      q['question'],
+                      style: const TextStyle(fontSize: 22),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        AnimatedBuilder(
+                          animation: _shakeAnimation,
+                          builder: (context, child) {
+                            double offset = 0;
+                            if (showResult && wasCorrect == false && selectedAnswer == true) {
+                              offset = _shakeAnimation.value * (Random().nextBool() ? 1 : -1);
+                            }
+                            return Transform.translate(
+                              offset: Offset(offset, 0),
+                              child: child,
+                            );
+                          },
+                          child: ElevatedButton(
+                            onPressed: (!answered && !showResult)
+                                ? () => _answer(true)
+                                : () {}, // Toujours enabled
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  WidgetStateProperty.resolveWith<Color?>((
+                                    states,
+                                  ) {
+                                    return _getButtonColor(true);
+                                  }),
+                              foregroundColor: WidgetStateProperty.all<Color>(
+                                Colors.black,
+                              ),
+                            ),
+                            child: Text(langTrueText(l10n)),
+                          ),
+                        ),
+                        const SizedBox(width: 32),
+                        AnimatedBuilder(
+                          animation: _shakeAnimation,
+                          builder: (context, child) {
+                            double offset = 0;
+                            if (showResult && wasCorrect == false && selectedAnswer == false) {
+                              offset = _shakeAnimation.value * (Random().nextBool() ? 1 : -1);
+                            }
+                            return Transform.translate(
+                              offset: Offset(offset, 0),
+                              child: child,
+                            );
+                          },
+                          child: ElevatedButton(
+                            onPressed: (!answered && !showResult)
+                                ? () => _answer(false)
+                                : () {}, // Toujours enabled
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  WidgetStateProperty.resolveWith<Color?>((
+                                    states,
+                                  ) {
+                                    return _getButtonColor(false);
+                                  }),
+                              foregroundColor: WidgetStateProperty.all<Color>(
+                                Colors.black,
+                              ),
+                            ),
+                            child: Text(langFalseText(l10n)),
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (!answered && selectedAnswer != null && !showResult)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: ElevatedButton(
+                          onPressed: _validate,
+                          child: Text(l10n.validateButton),
+                        ),
+                      ),
+                    if (showResult)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          wasCorrect == true
+                              ? l10n.correctResult
+                              : l10n.falseResult,
+                          style: TextStyle(
+                            color: wasCorrect == true
+                                ? Colors.green
+                                : Colors.red,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    if (showResult)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: ElevatedButton(
+                          onPressed: _nextQuestion,
+                          child: Text(
+                            currentIndex == 4
+                                ? l10n.endButton
+                                : l10n.nextButton,
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
-            ),
+              // Fill remaining space
+              const Expanded(child: SizedBox()),
+            ],
           ),
-          // Ajoute du padding entre le cercle et le texte
-          const SizedBox(height: 24),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  '${langQuestionText(l10n)} ${currentIndex + 1}/5',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  q['question'],
-                  style: const TextStyle(fontSize: 22),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 24),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: (!answered && !showResult) ? () => _answer(true) : () {}, // Toujours enabled
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.resolveWith<Color?>((states) {
-                          return _getButtonColor(true);
-                        }),
-                        foregroundColor: WidgetStateProperty.all<Color>(Colors.black),
-                      ),
-                      child: Text(langTrueText(l10n)),
-                    ),
-                    const SizedBox(width: 32),
-                    ElevatedButton(
-                      onPressed: (!answered && !showResult) ? () => _answer(false) : () {}, // Toujours enabled
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.resolveWith<Color?>((states) {
-                          return _getButtonColor(false);
-                        }),
-                        foregroundColor: WidgetStateProperty.all<Color>(Colors.black),
-                      ),
-                      child: Text(langFalseText(l10n)),
-                    ),
-                  ],
-                ),
-                if (!answered && selectedAnswer != null && !showResult)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16.0),
-                    child: ElevatedButton(
-                      onPressed: _validate,
-                      child: Text(l10n.validateButton),
-                    ),
-                  ),
-                if (showResult)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(
-                      wasCorrect == true
-                        ? l10n.correctResult
-                        : l10n.falseResult,
-                      style: TextStyle(
-                        color: wasCorrect == true ? Colors.green : Colors.red,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                if (showResult)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16.0),
-                    child: ElevatedButton(
-                      onPressed: _nextQuestion,
-                      child: Text(
-                        currentIndex == 4
-                          ? l10n.endButton
-                          : l10n.nextButton,
-                      ),
-                    ),
-                  ),
+          // Confetti widget
+          Align(
+            alignment: Alignment.topCenter,
+            child: ConfettiWidget(
+              confettiController: _confettiController,
+              blastDirectionality: BlastDirectionality.explosive,
+              shouldLoop: false,
+              colors: const [
+                Colors.green,
+                Colors.blue,
+                Colors.orange,
+                Colors.purple,
               ],
+              createParticlePath: null,
             ),
           ),
-          // Fill remaining space
-          const Expanded(child: SizedBox()),
         ],
       ),
     );
@@ -327,6 +414,8 @@ class _QuizPageState extends State<QuizPage> {
   @override
   void dispose() {
     _timer?.cancel();
+    _confettiController.dispose();
+    _shakeController.dispose();
     super.dispose();
   }
 
